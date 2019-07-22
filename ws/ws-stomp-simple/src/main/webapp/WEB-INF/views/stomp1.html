@@ -43,6 +43,9 @@
             stompClient.subscribe('/topic/getResponse',function(response){
                 showResponse(JSON.parse(response.body));
             });
+            stompClient.subscribe('/topic/greeting',function(response){
+                $("#response").append("<p>"+response.body+"</p>")
+            });
         });
     }
 

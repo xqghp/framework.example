@@ -21,6 +21,6 @@ public class Task {
     @Scheduled(fixedRate = 10000)
     public void sendMessage() {
         System.out.println("定时任务");
-        this.simpMessagingTemplate.convertAndSend("/topic/getResponse", "写在@Component @EnableScheduling 中的定时任务");
+        this.simpMessagingTemplate.convertAndSend("/topic/greeting", "写在@Component @EnableScheduling 中的定时任务");
     }
 }
