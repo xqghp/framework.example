@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Cache-Control" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="keywords" content="websocket|java|springmvc">
+    <meta name="description" content="This is an example of a Java websocket that uses the Spring MVC framework.">
+    <title>socket.html</title>
+</head>
+<body>
+Welcome<br/>
+<input id="text" type="text"/>
+<input type="button" onclick="send()" value="send"/>
+<input type="button" onclick="closeWebSocket()" value="Close"/>
+<div id="message"></div>
+<!-- 公共JS -->
+
+<!-- 独立JS -->
+<script src="../js/jquery/jquery-3.3.1.js"></script>
+
+<script type="text/javascript">
+    var userID = "888";
+    var websocket = null;
+    $(function () {
+        //创建WebSocket
+        connectWebSocket();
+    })
+
+    //强制关闭浏览器  调用websocket.close（）,进行正常关闭
+    window.onunload = function () {
+        //关闭连接
+        closeWebSocket();
+    }
+
+    //建立WebSocket连接
+    function connectWebSocket() {
+        console.log("开始...");
+        //建立webSocket连接
+        // websocket = new WebSocket("ws://127.0.0.1:9091/cloud-sbjm/myHandler/ID=" + userID);
+        websocket = new WebSocket("wss://xyzla.com/myHandler/ID=" + userID);
+        //打开webSokcet连接时，回调该函数
+        websocket.onopen = function () {
+            console.log("onpen");
+        }
+        //关闭webSocket连接时，回调该函数
+        websocket.onclose = function () {
+            //关闭连接
+            console.log("onclose");
+        }
+        //接收信息
+        websocket.onmessage = function (msg) {
+            console.log(msg.data);
+        }
+    }
+
+    //发送消息
+    function send() {
+        var postValue = {};
+        postValue.id = userID;
+        postValue.message = $("#text").val();
+        websocket.send(JSON.stringify(postValue));
+    }
+
+    //关闭连接
+    function closeWebSocket() {
+        if (websocket != null) {
+            websocket.close();
+        }
+    }
+</script>
+</body>
+</html>

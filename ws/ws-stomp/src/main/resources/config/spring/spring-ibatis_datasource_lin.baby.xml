@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="c3p0" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverClassName}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="30"/>
+        <property name="initialPoolSize" value="10"/>
+        <property name="maxIdleTime" value="30"/>
+        <property name="acquireIncrement" value="5"/>
+
+        <property name="maxStatements" value="0"/>
+        <property name="idleConnectionTestPeriod" value="60"/>
+        <property name="acquireRetryAttempts" value="30"/>
+        <property name="breakAfterAcquireFailure" value="false"/>
+
+        <property name="numHelperThreads" value="5"/>
+        <property name="acquireRetryDelay" value="500"/>
+        <property name="autoCommitOnClose" value="true"/>
+        <property name="forceIgnoreUnresolvedTransactions" value="false"/>
+        <property name="propertyCycle" value="300"/>
+        <property name="testConnectionOnCheckout" value="false"/>
+    </bean>
+
+    <bean id="dataSource" class="com.p6spy.engine.spy.P6DataSource">
+        <constructor-arg>
+            <ref bean="c3p0"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- sql分表插件 -->
+    <!-- <bean id="shardPlugin" class="com.google.code.shardbatis.plugin.ShardPlugin ">
+        <property name="properties">
+            <props>
+                <prop key="shardingConfig">
+                    config/ibatis/shard-config.xml
+                </prop>
+            </props>
+        </property>
+    </bean> -->
+
+    <!-- 连接事务的注解配置 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0">
+            <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+                <property name="dataSource" ref="dataSource"/>
+                <property name="configLocation" value="classpath:config/ibatis/mybatis-config.xml"></property>
+                <property name="mapperLocations" value="classpath*:sqlmap/linbaby/*.xml"/>
+                <!--<property name="mapperLocations" value="classpath*:com/xyzmu/api/sqlmap/*.xml"/>-->
+                <!-- <property name="plugins">
+                    <list>
+                        <ref bean="shardPlugin" />
+                    </list>
+                </property> -->
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1" value="SIMPLE"/>
+        <constructor-arg index="2">
+            <null/>
+        </constructor-arg>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionTemplateBeanName" value="sqlSession"/>
+        <property name="basePackage">
+            <value>
+                ink.opt.ws.springmvc.mapper
+            </value>
+        </property>
+    </bean>
+
+</beans>
