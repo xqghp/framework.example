@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-4.3.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+    <bean id="tcpServer" class="com.xyzla.netty.spring.server.NettyTCPServer" destroy-method="stopServer">
+        <constructor-arg ref="tcpConfig"/>
+        <constructor-arg ref="myChannelInitializer"/>
+    </bean>
+
+    <bean id="myChannelInitializer" class="com.xyzla.netty.spring.channel.MyChannelInitializer"/>
+
+    <bean id="tcpConfig" class="com.xyzla.netty.spring.NettyConfig">
+        <property name="channelOptions" ref="tcpChannelOptions"/>
+        <property name="bossGroup" ref="bossGroup"/>
+        <property name="workerGroup" ref="workerGroup"/>
+        <property name="portNumber" value="9090"/>
+    </bean>
+
+    <util:map id="tcpChannelOptions" map-class="java.util.HashMap">
+        <entry>
+            <key>
+                <util:constant static-field="io.netty.channel.ChannelOption.SO_KEEPALIVE"/>
+            </key>
+            <value type="java.lang.Boolean">true</value>
+        </entry>
+        <entry>
+            <key>
+                <util:constant static-field="io.netty.channel.ChannelOption.SO_BACKLOG"/>
+            </key>
+            <value type="java.lang.Integer">100</value>
+        </entry>
+    </util:map>
+
+    <bean id="bossGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
+        <constructor-arg type="int" index="0" value="2"/>
+        <constructor-arg index="1" ref="bossThreadFactory"/>
+    </bean>
+
+    <bean id="workerGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
+        <constructor-arg type="int" index="0"
+                         value="8"/>
+        <constructor-arg index="1" ref="workerThreadFactory"/>
+    </bean>
+
+    <bean id="bossThreadFactory" class="com.xyzla.netty.spring.concurrent.NamedThreadFactory">
+        <constructor-arg type="java.lang.String" value="Server-Boss"/>
+    </bean>
+
+    <bean id="workerThreadFactory" class="com.xyzla.netty.spring.concurrent.NamedThreadFactory">
+        <constructor-arg type="java.lang.String" index="0" value="Server-Worker"/>
+    </bean>
+    <bean id="appContext" class="com.xyzla.netty.spring.context.AppContext"/>
+</beans>
