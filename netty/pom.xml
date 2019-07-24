@@ -23,6 +23,7 @@
         <module>netty4-demo</module>
         <module>nettybook</module>
         <module>netty4-spring</module>
+        <module>nettyholdspringmvc</module>
     </modules>
 
     <dependencies>
