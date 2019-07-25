@@ -13,7 +13,7 @@
 
     <import resource="classpath:/config/spring/spring-netty.xml"/>
 
-    <bean id="myNettyServer" class="com.xyzla.netty.spring.server.ServerManager" init-method="startServer" destroy-method="stopServer"/>
+<!--    <bean id="myNettyServer" class="com.xyzla.netty.spring.server.ServerManager" init-method="startServer" destroy-method="stopServer"/>-->
 
 
 </beans>

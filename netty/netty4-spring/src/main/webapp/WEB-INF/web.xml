@@ -27,7 +27,7 @@
 
 
     <listener>
-        <!--        <listener-class>com.xyzla.netty.spring.servlet.context.TcpServerContextListener</listener-class>-->
+        <listener-class>com.xyzla.netty.spring.NettyListener</listener-class>
     </listener>
 
 </web-app>
