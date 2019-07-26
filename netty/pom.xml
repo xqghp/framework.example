@@ -24,6 +24,7 @@
         <module>nettybook</module>
         <module>netty4-spring</module>
         <module>nettyholdspringmvc</module>
+        <module>netty4-websocket</module>
     </modules>
 
     <dependencies>
