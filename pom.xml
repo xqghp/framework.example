@@ -31,7 +31,7 @@
         <jibx.version>1.3.1</jibx.version>
         <jboss.marshalling.version>1.4.11.Final</jboss.marshalling.version>
         <slf4j.version>1.7.26</slf4j.version>
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
     </properties>
 
     <dependencyManagement><!--dependencyManagement用于管理依赖版本号-->
